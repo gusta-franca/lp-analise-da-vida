@@ -1,22 +1,24 @@
 module Main (main) where
 
 import Control.Concurrent (threadDelay)
-import Environment        (criarMatriz, popularMatriz)
+import CustomIo           (listarArquivos, lerArquivo)
+import Environment        (carregarMatriz)
 import Render             (exibirTabuleiro)
 import Rules              (proximaGeracao)
-
-tamanho :: Int
-tamanho = 20
 
 intervalo :: Int
 intervalo = 500000
 
 main :: IO ()
 main = do
-  let tabuleiroVazio = criarMatriz tamanho
-  tabuleiroInicial  <- popularMatriz tabuleiroVazio
+  let dataDir = "data/"
+
+  listarArquivos dataDir
+  arquivo <- lerArquivo dataDir
+  
+  let tabuleiro = carregarMatriz arquivo
   putStrLn ""
-  loop 1 tabuleiroInicial
+  loop 1 tabuleiro
 
 loop :: Int -> [[Char]] -> IO ()
 loop geracao tabuleiro = do
