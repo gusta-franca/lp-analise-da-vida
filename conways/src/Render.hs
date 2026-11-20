@@ -1,14 +1,17 @@
 module Render (exibirTabuleiro) where
 
+import System.IO (hFlush, stdout)
+
 exibirTabuleiro :: Int -> [[Char]] -> IO ()
 exibirTabuleiro geracao tabuleiro = do
-  limparTela
+  -- Impede o cursor de sobrescrever símbolos fora da matriz
+  if geracao > 1
+    then moverCursor (length tabuleiro + 1)
+    else putStr ""
+    
   exibirCabecalho geracao
   mapM_ exibirLinha tabuleiro
-
--- Clear e cursor 
-limparTela :: IO ()
-limparTela = putStr "\ESC[H\ESC[2J"
+  hFlush stdout
 
 exibirCabecalho :: Int -> IO ()
 exibirCabecalho geracao =
@@ -16,3 +19,6 @@ exibirCabecalho geracao =
 
 exibirLinha :: [Char] -> IO ()
 exibirLinha linha = putStrLn (unwords (map (: []) linha))
+
+moverCursor :: Int -> IO ()
+moverCursor n = putStr $ "\ESC[" ++ show n ++ "F"

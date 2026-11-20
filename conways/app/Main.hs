@@ -15,6 +15,7 @@ main :: IO ()
 main = do
   let tabuleiroVazio = criarMatriz tamanho
   tabuleiroInicial  <- popularMatriz tabuleiroVazio
+  putStrLn ""
   loop 1 tabuleiroInicial
 
 loop :: Int -> [[Char]] -> IO ()
