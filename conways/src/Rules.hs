@@ -13,7 +13,7 @@ proximaGeracao tabuleiro =
 
 proximaCelula :: [[Char]] -> Int -> Int -> Char
 proximaCelula tabuleiro linha coluna
-  | estaViva && (vizinhos < 2 || vizinhos > 3) = '.' 
+  | estaViva && (vizinhos < 2 || vizinhos > 3)   = '.' 
   | estaViva && (vizinhos == 2 || vizinhos == 3) = 'X' 
   | not estaViva && vizinhos == 3                = 'X' 
   | otherwise                                    = '.'  
@@ -39,5 +39,5 @@ celula tabuleiro linha coluna = (tabuleiro !! linha) !! coluna
 
 dentroDoLimite :: [[Char]] -> Int -> Int -> Bool
 dentroDoLimite tabuleiro linha coluna =
-  linha   >= 0 && linha   < length tabuleiro &&
-  coluna  >= 0 && coluna  < length (head tabuleiro)
+  linha  >= 0 && linha  < length tabuleiro &&
+  coluna >= 0 && coluna < length (head tabuleiro)
