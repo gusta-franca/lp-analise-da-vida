@@ -1,5 +1,7 @@
 module Rules (proximaGeracao) where
 
+import Environment(celulaViva, celulaMorta)
+
 proximaGeracao :: [[Char]] -> [[Char]]
 proximaGeracao tabuleiro =
   [ [ proximaCelula tabuleiro linha coluna
@@ -13,12 +15,12 @@ proximaGeracao tabuleiro =
 
 proximaCelula :: [[Char]] -> Int -> Int -> Char
 proximaCelula tabuleiro linha coluna
-  | estaViva && (vizinhos < 2 || vizinhos > 3)   = '.' 
-  | estaViva && (vizinhos == 2 || vizinhos == 3) = 'X' 
-  | not estaViva && vizinhos == 3                = 'X' 
-  | otherwise                                    = '.'  
+  | estaViva && (vizinhos < 2 || vizinhos > 3)   = celulaMorta 
+  | estaViva && (vizinhos == 2 || vizinhos == 3) = celulaViva 
+  | not estaViva && vizinhos == 3                = celulaViva 
+  | otherwise                                    = celulaMorta  
   where
-    estaViva = celula tabuleiro linha coluna == 'X'
+    estaViva = celula tabuleiro linha coluna == celulaViva
     vizinhos = contarVizinhos tabuleiro linha coluna
 
 contarVizinhos :: [[Char]] -> Int -> Int -> Int
@@ -30,7 +32,7 @@ contarVizinhos tabuleiro linha coluna =
          , let l = linha  + dl
          , let c = coluna + dc
          , dentroDoLimite tabuleiro l c   
-         , celula tabuleiro l c == 'X'
+         , celula tabuleiro l c == celulaViva
          ]
 
 -- Retorna o conteúdo de uma célula na posição (linha, coluna)
