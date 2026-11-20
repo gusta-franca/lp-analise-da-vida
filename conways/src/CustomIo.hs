@@ -1,4 +1,4 @@
-module CustomIo (listarArquivos, lerArquivo) where
+module CustomIo (listarArquivos, lerArquivo, lerComando) where
 
 import System.Directory   (listDirectory, doesFileExist)
 import System.IO          (hFlush, stdout)
@@ -29,6 +29,18 @@ pedirArquivo = do
   hFlush stdout
   arquivo <- getLine
   return arquivo
+
+lerComando :: String -> IO String
+lerComando mensagem = do
+  putStr mensagem
+  hFlush stdout
+  comando <- getLine
+
+  if comando == "" || comando == "q" || comando == "Q"
+    then return comando
+    else do
+      putStr "\ESC[1F\ESC[K"
+      lerComando "Comando inválido"
 
 exibirLista :: [String] -> IO ()
 exibirLista [] = return () 

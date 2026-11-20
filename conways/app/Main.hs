@@ -1,13 +1,9 @@
 module Main (main) where
 
-import Control.Concurrent (threadDelay)
-import CustomIo           (listarArquivos, lerArquivo)
+import CustomIo           (listarArquivos, lerArquivo, lerComando)
 import Environment        (carregarMatriz)
 import Render             (exibirTabuleiro)
 import Rules              (proximaGeracao)
-
-intervalo :: Int
-intervalo = 500000
 
 main :: IO ()
 main = do
@@ -22,6 +18,9 @@ main = do
 
 loop :: Int -> [[Char]] -> IO ()
 loop geracao tabuleiro = do
-  exibirTabuleiro geracao tabuleiro
-  threadDelay intervalo
-  loop (geracao + 1) (proximaGeracao tabuleiro)
+  exibirTabuleiro geracao tabuleiro  
+  comando <- lerComando "Pressione ENTER para avançar ou Q para sair: "
+  
+  if comando == "q" || comando == "Q"
+    then putStrLn "Encerrando execução"
+    else loop (geracao + 1) (proximaGeracao tabuleiro)

@@ -5,7 +5,7 @@ import Data.List (intersperse)
 
 exibirTabuleiro :: Int -> [[Char]] -> IO ()
 exibirTabuleiro geracao tabuleiro = do
-  let altura = length tabuleiro + 1
+  let altura = length tabuleiro + 2
 
   -- Impede o cursor de sobrescrever símbolos fora da matriz
   if geracao > 1
