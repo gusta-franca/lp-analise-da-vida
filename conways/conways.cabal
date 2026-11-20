@@ -65,13 +65,14 @@ executable conways
     other-modules:    Environment
                     , Rules
                     , Render
+                    , CustomIo
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
 
     -- Other library packages from which modules are imported.
     build-depends:    base ^>=4.20.2.0
-                    , random
+                    , random, directory
 
     -- Directories containing source files.
     hs-source-dirs:   app, src
