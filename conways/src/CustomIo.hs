@@ -3,6 +3,7 @@ module CustomIo (listarArquivos, lerArquivo, lerComando, lerInteiro, lerModo) wh
 import System.Directory   (listDirectory, doesFileExist)
 import System.IO          (hFlush, stdout)
 import Data.Char          (isDigit)
+import Environment (posCursor, limparLinha)
 
 -- Helper para listar todos os arquivos em um diretório
 listarArquivos :: String -> IO ()
@@ -46,7 +47,7 @@ lerComando mensagem = do
   if comando == "" || comando == "q" || comando == "Q"
     then return comando
     else do
-      putStr "\ESC[1F\ESC[K"
+      putStr (posCursor 1 ++ limparLinha)
       lerComando "Comando inválido"
 
 -- Helper para ler e validar o modo de execução

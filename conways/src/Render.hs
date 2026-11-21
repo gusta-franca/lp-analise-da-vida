@@ -2,6 +2,7 @@ module Render (exibirTabuleiro) where
 
 import System.IO (hFlush, stdout)
 import Data.List (intersperse)
+import Environment (limparLinha, posCursor)
 
 -- Exibe a matriz completa no terminal
 exibirTabuleiro :: Int -> Int -> [[Char]] -> IO ()
@@ -20,7 +21,7 @@ exibirTabuleiro geracao linhas tabuleiro = do
 -- Helper para exibir o cabeçalho de uma nova geração
 exibirCabecalho :: Int -> IO ()
 exibirCabecalho geracao =
-  putStrLn $ "Geração " ++ show geracao ++ "\ESC[K"
+  putStrLn $ "Geração " ++ show geracao ++ limparLinha
 
 -- Helper para exibir as linhas de uma matriz
 exibirLinhas :: [[Char]] -> IO ()
@@ -31,4 +32,4 @@ exibirLinhas (linha : matriz) = do
 
 -- Helper para voltar o cursor ao começo do terminal
 moverCursor :: Int -> IO ()
-moverCursor n = putStr $ "\ESC[" ++ show n ++ "F"
+moverCursor n = putStr (posCursor n)

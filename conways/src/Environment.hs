@@ -1,11 +1,17 @@
-module Environment (criarMatriz, popularMatriz, carregarMatriz, celulaViva, celulaMorta) where
+module Environment (criarMatriz, popularMatriz, carregarMatriz, celulaViva, celulaMorta, limparLinha, posCursor) where
 
 import System.Random      (randomRIO)
 
 celulaViva :: Char
 celulaMorta :: Char
+limparLinha :: String
+posCursor :: Int -> String
+
 celulaViva = 'O'
 celulaMorta = '.'
+limparLinha = "\ESC[K"
+posCursor n = "\ESC[" ++ show n ++ "F"
+
 
 criarMatriz :: Int -> [[Char]]
 criarMatriz n = replicate n (replicate n celulaMorta)
