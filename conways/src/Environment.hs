@@ -15,6 +15,8 @@ popularMatriz :: [[Char]] -> IO [[Char]]
 popularMatriz matriz = do
   let n      = length matriz
   valores   <- sequence (replicate (n * n) (randomRIO (0, 1) :: IO Int))
+  
+  -- Map para aplicar 'celulaAleatoria' a todos os elementos de 'valores'
   let chars  = map celulaAleatoria valores
   return (distribuir chars n)
 
@@ -27,4 +29,6 @@ celulaAleatoria _ = celulaMorta
 
 distribuir :: [Char] -> Int -> [[Char]]
 distribuir [] _ = []
+
+-- Recursão para realizar a divisão de uma lista
 distribuir cs  n = take n cs : distribuir (drop n cs) n
