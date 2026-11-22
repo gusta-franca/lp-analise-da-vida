@@ -1,5 +1,6 @@
-module CustomIo (lerArquivo, lerModo, lerTexto, lerAtividade) where
+module CustomIo (lerArquivo, lerModo, lerTexto, lerAtividade, lerNumPalavras) where
 
+import Data.Char (isDigit)
 import System.Directory (doesFileExist)
 import System.IO (hFlush, stdout)
 
@@ -70,3 +71,24 @@ lerTexto = do
 
   texto <- getLine
   return texto
+
+lerNumPalavras :: IO Int
+lerNumPalavras = do
+  putStrLn ""
+  putStrLn "Número de palavras: "
+  hFlush stdout
+  entrada <- getLine
+
+  if not (null entrada) && all isDigit entrada
+    then do
+      let n = read entrada :: Int
+      if n > 0
+        then return n
+        else invalidInput
+    else invalidInput
+  where
+    invalidInput = do
+      putStrLn ""
+      putStrLn "ERRO: Entrada inválida!"
+      putStrLn ""
+      lerNumPalavras
