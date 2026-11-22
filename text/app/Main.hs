@@ -1,6 +1,6 @@
 module Main (main) where
 
-import Analyser (totalPalavras)
+import Analyser (frequenciaPalavras, totalPalavras)
 import CustomIo (lerArquivo, lerAtividade, lerModo, lerTexto)
 
 main :: IO ()
@@ -20,6 +20,8 @@ main = do
   case atividade of
     "1" -> do
       totalPalavras texto
+    "2" -> do
+      frequenciaPalavras texto
     _ -> do
       putStrLn "ERRO: Opção inválida :("
 
