@@ -16,7 +16,9 @@ main = do
 
   atividade <- lerAtividade
 
-  -- Ler opções: Ordenar (alfabetica/frequencia): função já tá pronta, remover stopwords
+  -- Ver se o usuário quer remover stopwords
+
+  -- Tem que perguntar sobre a ordenação da tabela, provavelmente dentro das próprias funções de atividade 
 
   case atividade of
     "1" -> do
