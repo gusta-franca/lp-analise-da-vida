@@ -5,7 +5,7 @@ import Environment(celulaViva, celulaMorta)
 -- Retorna uma matriz nova representando a próxima iteração do jogo
 proximaGeracao :: [[Char]] -> [[Char]]
 proximaGeracao tabuleiro =
-  -- List COmprehension para iterar sobre as linhas e colunas sem utilizar laços de repetição
+  -- List Comprehension para iterar sobre as linhas e colunas sem utilizar laços de repetição
   [ [ proximaCelula tabuleiro linha coluna
     | coluna <- [0 .. cols - 1]
     ]

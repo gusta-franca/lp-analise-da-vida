@@ -45,6 +45,7 @@ lerModo = do
       putStrLn "ERRO: Opção inválida"
       lerModo
 
+-- Helper para ler qual atividade será realizada
 lerAtividade :: IO String
 lerAtividade = do
   putStrLn ""
@@ -63,6 +64,7 @@ lerAtividade = do
       putStrLn "ERRO: Opção inválida"
       lerAtividade
 
+-- Helper para ler um texto inserido manualmente
 lerTexto :: IO String
 lerTexto = do
   putStrLn ""
@@ -72,6 +74,7 @@ lerTexto = do
   texto <- getLine
   return texto
 
+-- Helper para ler e validar o número de palavras que devem ser exibidas
 lerNumPalavras :: IO Int
 lerNumPalavras = do
   putStrLn ""
