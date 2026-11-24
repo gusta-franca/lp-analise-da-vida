@@ -10,14 +10,15 @@ import Data.Ord (Down (..), comparing)
 totalPalavras :: String -> IO ()
 totalPalavras textoCru = do
   let tamanho = length (words (_normalizarTexto textoCru))
-  putStrLn ("")
+  putStrLn ("Contagem de palavras")
   putStr ("Número total de palavras no texto lido: " ++ show tamanho)
-  putStrLn ""
 
 -- Imprime todas as palavras distintas e o número de vezes que aparecem
 frequenciaPalavras :: String -> IO ()
 frequenciaPalavras textoCru = do
   putStrLn ""
+  putStrLn ""
+  putStrLn "Frequência de palavras"
   putStrLn "Palavra: Frequência"
   let mapa = _enumerarPalavras textoCru
   mapM_ (\(palavra, qtd) -> putStrLn (palavra ++ ":" ++ show qtd)) (Map.toAscList mapa)
@@ -34,6 +35,7 @@ palavrasFrequentes textoCru = do
     else do
       let palavras = take numPalavras (mapa)
       putStrLn ""
+      putStrLn (show (numPalavras) ++ " palavras mais frequentes")
       putStrLn "Palavra: Frequência"
       mapM_ (\(palavra, qtd) -> putStrLn (palavra ++ ":" ++ show qtd)) (palavras)
 
@@ -46,7 +48,7 @@ _enumerarPalavras textoCru = do
   where
     inserirContagem acc palavra = Map.insertWith (+) palavra 1 acc
 
--- Transforma a tabela em uma lista e usa o sortBy para ordenar com base na frequência  
+-- Transforma a tabela em uma lista e usa o sortBy para ordenar com base na frequência
 _ordenarPorFrequencia :: Map.Map String Int -> [(String, Int)]
 _ordenarPorFrequencia = sortBy (comparing (Down . snd)) . Map.toList
 

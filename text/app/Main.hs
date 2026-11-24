@@ -1,7 +1,7 @@
 module Main (main) where
 
 import Analyser (frequenciaPalavras, palavrasFrequentes, totalPalavras)
-import CustomIo (lerArquivo, lerAtividade, lerModo, lerTexto)
+import CustomIo (lerArquivo, lerModo, lerTexto, perguntarOrdem, perguntarStopword)
 
 main :: IO ()
 main = do
@@ -14,20 +14,17 @@ main = do
       putStrLn "ERRO: Opção inválida :("
       pure ""
 
-  atividade <- lerAtividade
-
   -- Ver se o usuário quer remover stopwords
+  removerComuns <- perguntarStopword
 
-  -- Tem que perguntar sobre a ordenação da tabela, provavelmente dentro das próprias funções de atividade 
+  -- Tem que perguntar sobre a ordenação da tabela, provavelmente dentro das próprias funções de atividade
+  ordem <- perguntarOrdem
+  -- Se for alfabética não precisa fazer nada, ela já é armazenada assim
+  -- Também tem uma função pra ordenar por frequência já
 
-  case atividade of
-    "1" -> do
-      totalPalavras texto
-    "2" -> do
-      frequenciaPalavras texto
-    "3" -> do
-      palavrasFrequentes texto
-    _ -> do
-      putStrLn "ERRO: Opção inválida :("
+  putStrLn "\n-- ANÁLISE: "
+  totalPalavras texto
+  frequenciaPalavras texto
+  palavrasFrequentes texto
 
   putStrLn ""

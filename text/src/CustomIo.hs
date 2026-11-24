@@ -1,4 +1,4 @@
-module CustomIo (lerArquivo, lerModo, lerTexto, lerAtividade, lerNumPalavras) where
+module CustomIo (lerArquivo, lerModo, lerTexto, lerNumPalavras, perguntarStopword, perguntarOrdem) where
 
 import Data.Char (isDigit)
 import System.Directory (doesFileExist)
@@ -45,25 +45,6 @@ lerModo = do
       putStrLn "ERRO: Opção inválida"
       lerModo
 
--- Helper para ler qual atividade será realizada
-lerAtividade :: IO String
-lerAtividade = do
-  putStrLn ""
-  putStrLn "Escolha a atividade a ser executada:"
-  putStrLn "1 - Contagem de palavras"
-  putStrLn "2 - Frequência de cada palavra"
-  putStrLn "3 - Palavras mais frequentes"
-  putStrLn "4 - Frequência relativa"
-  putStr "Opção: "
-  hFlush stdout
-  atividade <- getLine
-
-  if atividade == "1" || atividade == "2" || atividade == "3" || atividade == "4"
-    then return atividade
-    else do
-      putStrLn "ERRO: Opção inválida"
-      lerAtividade
-
 -- Helper para ler um texto inserido manualmente
 lerTexto :: IO String
 lerTexto = do
@@ -95,3 +76,29 @@ lerNumPalavras = do
       putStrLn "ERRO: Entrada inválida!"
       putStrLn ""
       lerNumPalavras
+
+perguntarStopword :: IO Bool
+perguntarStopword = do
+  putStrLn ""
+  putStrLn "Remover palavras comuns (artigos, preposições, etc.)? s/N"
+  hFlush stdout
+  entrada <- getLine
+
+  if (entrada == "s" || entrada == "S")
+    then return True
+    else return False
+
+perguntarOrdem :: IO String
+perguntarOrdem = do
+  putStrLn ""
+  putStrLn "Ordenar por: "
+  putStrLn "1 - Ordem alfabética"
+  putStrLn "2 - Por frequência"
+  hFlush stdout
+  entrada <- getLine
+
+  if entrada == "1" || entrada == "2"
+    then return entrada
+    else do
+      putStrLn "ERRO: Opção inválida"
+      perguntarOrdem
