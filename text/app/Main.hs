@@ -17,14 +17,12 @@ main = do
   -- Ver se o usuário quer remover stopwords
   removerComuns <- perguntarStopword
 
-  -- Tem que perguntar sobre a ordenação da tabela, provavelmente dentro das próprias funções de atividade
+  -- Ver como o usuário quer ordenar as palavras
   ordem <- perguntarOrdem
-  -- Se for alfabética não precisa fazer nada, ela já é armazenada assim
-  -- Também tem uma função pra ordenar por frequência já
 
   putStrLn "\n-- ANÁLISE: "
-  totalPalavras texto
-  frequenciaPalavras texto
-  palavrasFrequentes texto
+  totalPalavras texto removerComuns
+  frequenciaPalavras texto removerComuns ordem
+  palavrasFrequentes texto removerComuns ordem
 
   putStrLn ""

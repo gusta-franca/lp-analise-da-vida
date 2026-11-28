@@ -3,6 +3,7 @@ module CustomIo (lerArquivo, lerModo, lerTexto, lerNumPalavras, perguntarStopwor
 import Data.Char (isDigit)
 import System.Directory (doesFileExist)
 import System.IO (hFlush, stdout)
+import Text.Read ()
 
 -- Helper para ler os dados de um arquivo
 lerArquivo :: IO String
@@ -49,11 +50,15 @@ lerModo = do
 lerTexto :: IO String
 lerTexto = do
   putStrLn ""
-  putStrLn "Escreva o texto desejado:"
+  putStrLn "Escreva o texto desejado. Finalize com uma linha vazia:"
   hFlush stdout
-
-  texto <- getLine
-  return texto
+  lerLinhas []
+  where
+    lerLinhas linhas = do
+      linha <- getLine
+      if null linha
+        then pure (unlines (reverse linhas))
+        else lerLinhas (linha : linhas)
 
 -- Helper para ler e validar o número de palavras que devem ser exibidas
 lerNumPalavras :: IO Int
