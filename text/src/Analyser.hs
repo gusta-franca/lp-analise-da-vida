@@ -1,4 +1,4 @@
-module Analyser (totalPalavras, frequenciaPalavras, palavrasFrequentes, frequenciaRelativa) where
+module Analyser (totalPalavras, frequenciaPalavras, palavrasFrequentes) where
 
 import CustomIo (lerNumPalavras)
 import Data.Char (isLetter, toLower)
@@ -21,9 +21,17 @@ frequenciaPalavras textoCru removerComuns ordem = do
   putStrLn ""
   putStrLn ""
   putStrLn "Frequência de palavras"
-  putStrLn "Palavra: Frequência"
-  let pares = _ordenarEntradas ordem (_enumerarPalavras removerComuns textoCru)
-  mapM_ (\(palavra, qtd) -> putStrLn (palavra ++ ":" ++ show qtd)) pares
+  putStrLn "Palavra: Frequência: Frequência Relativa"
+  let mapa = _enumerarPalavras removerComuns textoCru
+      total = sum (Map.elems mapa)
+      pares = _ordenarEntradas ordem mapa
+  mapM_
+    (\(palavra, qtd) ->
+      let percentual :: Double
+          percentual = (fromIntegral qtd / fromIntegral total) * 100
+       in putStrLn (palavra ++ ": " ++ show qtd ++ ": " ++ printf "%.2f%%" percentual)
+    )
+    pares
 
 -- Imprime n palavras mais frequentes
 palavrasFrequentes :: String -> Bool -> String -> IO ()
@@ -44,27 +52,6 @@ palavrasFrequentes textoCru removerComuns _ordem = do
           putStrLn (show numPalavras ++ " palavras mais frequentes")
           putStrLn "Palavra: Frequência"
           mapM_ (\(palavra, qtd) -> putStrLn (palavra ++ ":" ++ show qtd)) palavras
-
--- Imprime todas as palavras distintas e sua frequência relativa
-frequenciaRelativa :: String -> Bool -> String -> IO ()
-frequenciaRelativa textoCru removerComuns ordem = do
-  let mapa = _enumerarPalavras removerComuns textoCru
-  putStrLn ""
-  putStrLn ""
-  putStrLn "Frequência relativa"
-  if Map.null mapa
-    then putStrLn "Não há palavras para calcular a frequência relativa."
-    else do
-      putStrLn "Palavra: Frequência relativa"
-      let total = sum (Map.elems mapa)
-      let pares = _ordenarEntradas ordem mapa
-      mapM_
-        (\(palavra, qtd) ->
-          let percentual :: Double
-              percentual = (fromIntegral qtd / fromIntegral total) * 100
-           in putStrLn (palavra ++ ":" ++ printf "%.2f%%" percentual)
-        )
-        pares
 
 -- Cria um dicionário com as palavras e suas frequências
 _enumerarPalavras :: Bool -> String -> Map.Map String Int

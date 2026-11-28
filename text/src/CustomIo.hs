@@ -3,7 +3,7 @@ module CustomIo (lerArquivo, lerModo, lerTexto, lerNumPalavras, perguntarStopwor
 import Data.Char (isDigit)
 import System.Directory (doesFileExist)
 import System.IO (hFlush, stdout)
-import Text.Read (readMaybe)
+import Text.Read ()
 
 -- Helper para ler os dados de um arquivo
 lerArquivo :: IO String

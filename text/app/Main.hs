@@ -1,6 +1,6 @@
 module Main (main) where
 
-import Analyser (frequenciaPalavras, frequenciaRelativa, palavrasFrequentes, totalPalavras)
+import Analyser (frequenciaPalavras, palavrasFrequentes, totalPalavras)
 import CustomIo (lerArquivo, lerModo, lerTexto, perguntarOrdem, perguntarStopword)
 
 main :: IO ()
@@ -24,6 +24,5 @@ main = do
   totalPalavras texto removerComuns
   frequenciaPalavras texto removerComuns ordem
   palavrasFrequentes texto removerComuns ordem
-  frequenciaRelativa texto removerComuns ordem
 
   putStrLn ""
