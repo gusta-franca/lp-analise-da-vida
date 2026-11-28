@@ -15,23 +15,53 @@ totalPalavras textoCru removerComuns = do
   putStrLn ("Contagem de palavras")
   putStr ("Número total de palavras no texto lido: " ++ show tamanho)
 
--- Imprime todas as palavras distintas e o número de vezes que aparecem
+-- Imprime uma tabela com a frequência absoluta e relativa de cada palavra distinta
 frequenciaPalavras :: String -> Bool -> String -> IO ()
 frequenciaPalavras textoCru removerComuns ordem = do
   putStrLn ""
   putStrLn ""
   putStrLn "Frequência de palavras"
-  putStrLn "Palavra: Frequência: Frequência Relativa"
   let mapa = _enumerarPalavras removerComuns textoCru
       total = sum (Map.elems mapa)
       pares = _ordenarEntradas ordem mapa
+      -- Formata o percentual de cada palavra antes de calcular as larguras da tabela
+      linhas =
+        map
+          ( \(palavra, qtd) ->
+              let percentual :: Double
+                  -- A conversão para Double evita que a divisão descarte as casas decimais
+                  percentual = (fromIntegral qtd / fromIntegral total) * 100
+               in (palavra, show qtd, printf "%.2f%%" percentual)
+          )
+          pares
+      -- Considera o cabeçalho e o maior valor de cada coluna
+      larguraPalavra = maximum (length "Palavra" : map (\(palavra, _, _) -> length palavra) linhas)
+      larguraFrequencia = maximum (length "Frequência" : map (\(_, qtd, _) -> length qtd) linhas)
+      larguraRelativa = maximum (length "Frequência Relativa" : map (\(_, _, relativa) -> length relativa) linhas)
+      -- Distribui espaços ao redor do valor; se sobrar um espaço, ele fica à direita
+      centralizar largura valor =
+        let espacos = largura - length valor
+         in replicate (espacos `div` 2) ' ' ++ valor ++ replicate (espacos - espacos `div` 2) ' '
+      separador = " | "
+      cabecalho =
+        centralizar larguraPalavra "Palavra"
+          ++ separador
+          ++ centralizar larguraFrequencia "Frequência"
+          ++ separador
+          ++ centralizar larguraRelativa "Frequência Relativa"
+  putStrLn cabecalho
+  putStrLn (replicate (larguraPalavra + larguraFrequencia + larguraRelativa + 6) '-')
   mapM_
-    (\(palavra, qtd) ->
-      let percentual :: Double
-          percentual = (fromIntegral qtd / fromIntegral total) * 100
-       in putStrLn (palavra ++ ": " ++ show qtd ++ ": " ++ printf "%.2f%%" percentual)
+    (\(palavra, qtd, relativa) ->
+      putStrLn
+        ( centralizar larguraPalavra palavra
+            ++ separador
+            ++ centralizar larguraFrequencia qtd
+            ++ separador
+            ++ centralizar larguraRelativa relativa
+        )
     )
-    pares
+    linhas
 
 -- Imprime n palavras mais frequentes
 palavrasFrequentes :: String -> Bool -> String -> IO ()
@@ -53,38 +83,36 @@ palavrasFrequentes textoCru removerComuns _ordem = do
           putStrLn "Palavra: Frequência"
           mapM_ (\(palavra, qtd) -> putStrLn (palavra ++ ":" ++ show qtd)) palavras
 
--- Cria um dicionário com as palavras e suas frequências
+-- Conta as palavras analisáveis e armazena as frequências em um Map
 _enumerarPalavras :: Bool -> String -> Map.Map String Int
 _enumerarPalavras removerComuns textoCru = do
-  -- foldl com ' para evitar stackOverflow
-  -- Aqui serve para fazer a contagem das palavras
+  -- foldl' evita acumular cálculos pendentes durante a contagem
   foldl' inserirContagem Map.empty (_palavrasAnalisaveis removerComuns textoCru)
   where
     inserirContagem acc palavra = Map.insertWith (+) palavra 1 acc
 
--- Transforma a tabela em uma lista e usa o sortBy para ordenar com base na frequência
+-- Ordena por frequência decrescente e, em caso de empate, por palavra
 _ordenarPorFrequencia :: Map.Map String Int -> [(String, Int)]
 _ordenarPorFrequencia =
   sortBy (\a b -> comparing (Down . snd) a b <> comparing fst a b)
     . Map.toList
 
--- Seleciona a ordenação usada nas tabelas
+-- Usa frequência decrescente para a opção "2", nas demais, ordem alfabética
 _ordenarEntradas :: String -> Map.Map String Int -> [(String, Int)]
 _ordenarEntradas "2" = _ordenarPorFrequencia
 _ordenarEntradas _ = Map.toAscList
 
--- Usa a funćão map para limpar o texto provido pelo usuário
+-- Converte letras para minúsculas e substitui caracteres não alfabéticos por espaços
 _normalizarTexto :: String -> String
 _normalizarTexto =
-  -- Map que aplica uma função lambda para todos os caracteres do texto
   map (\c -> if isLetter c || c == ' ' || c == '\n' then toLower c else ' ')
 
--- Seleciona as palavras que farão parte das análises
+-- Prepara as palavras para análise, removendo stopwords quando solicitado
 _palavrasAnalisaveis :: Bool -> String -> [String]
 _palavrasAnalisaveis removerComuns textoCru =
   _removerStopwords removerComuns (words (_normalizarTexto textoCru))
 
--- Remove palavras comuns da lista antes da contagem
+-- Remove palavras comuns da lista quando a opção está ativada
 _removerStopwords :: Bool -> [String] -> [String]
 _removerStopwords removerComuns palavras =
   if removerComuns
