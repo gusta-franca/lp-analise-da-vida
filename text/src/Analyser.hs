@@ -2,7 +2,7 @@ module Analyser (totalPalavras, frequenciaPalavras, palavrasFrequentes, frequenc
 
 import CustomIo (lerNumPalavras)
 import Data.Char (isLetter, toLower)
-import Data.List (foldl', sortBy)
+import Data.List (sortBy)
 import qualified Data.Map.Strict as Map
 import Data.Ord (Down (..), comparing)
 import qualified Data.Set as Set
@@ -28,40 +28,43 @@ frequenciaPalavras textoCru removerComuns ordem = do
 -- Imprime n palavras mais frequentes
 palavrasFrequentes :: String -> Bool -> String -> IO ()
 palavrasFrequentes textoCru removerComuns _ordem = do
-  numPalavras <- lerNumPalavras
   let mapa = _enumerarPalavras removerComuns textoCru
-  let pares = _ordenarEntradas "2" mapa
-  if numPalavras > length (mapa)
-    then do
-      putStrLn "ERROR: Número de palavras exibidas não pode ser maior do que o número de palavras no texto."
-      palavrasFrequentes textoCru removerComuns _ordem
+  if Map.null mapa
+    then putStrLn "Não há palavras para exibir na análise de palavras mais frequentes."
     else do
-      let palavras = take numPalavras pares
-      putStrLn ""
-      putStrLn (show (numPalavras) ++ " palavras mais frequentes")
-      putStrLn "Palavra: Frequência"
-      mapM_ (\(palavra, qtd) -> putStrLn (palavra ++ ":" ++ show qtd)) (palavras)
+      numPalavras <- lerNumPalavras
+      let pares = _ordenarEntradas "2" mapa
+      if numPalavras > Map.size mapa
+        then do
+          putStrLn "ERRO: O número de palavras não pode ser maior do que a quantidade de palavras distintas no texto."
+          palavrasFrequentes textoCru removerComuns _ordem
+        else do
+          let palavras = take numPalavras pares
+          putStrLn ""
+          putStrLn (show numPalavras ++ " palavras mais frequentes")
+          putStrLn "Palavra: Frequência"
+          mapM_ (\(palavra, qtd) -> putStrLn (palavra ++ ":" ++ show qtd)) palavras
 
 -- Imprime todas as palavras distintas e sua frequência relativa
 frequenciaRelativa :: String -> Bool -> String -> IO ()
 frequenciaRelativa textoCru removerComuns ordem = do
+  let mapa = _enumerarPalavras removerComuns textoCru
   putStrLn ""
   putStrLn ""
   putStrLn "Frequência relativa"
-  putStrLn "Palavra: Frequência relativa"
-  let mapa = _enumerarPalavras removerComuns textoCru
-  let total = sum (Map.elems mapa)
-  let pares = _ordenarEntradas ordem mapa
-  mapM_
-    (\(palavra, qtd) ->
-      let percentual :: Double
-          percentual =
-            if total == 0
-              then 0
-              else (fromIntegral qtd / fromIntegral total) * 100
-       in putStrLn (palavra ++ ":" ++ printf "%.2f%%" percentual)
-    )
-    pares
+  if Map.null mapa
+    then putStrLn "Não há palavras para calcular a frequência relativa."
+    else do
+      putStrLn "Palavra: Frequência relativa"
+      let total = sum (Map.elems mapa)
+      let pares = _ordenarEntradas ordem mapa
+      mapM_
+        (\(palavra, qtd) ->
+          let percentual :: Double
+              percentual = (fromIntegral qtd / fromIntegral total) * 100
+           in putStrLn (palavra ++ ":" ++ printf "%.2f%%" percentual)
+        )
+        pares
 
 -- Cria um dicionário com as palavras e suas frequências
 _enumerarPalavras :: Bool -> String -> Map.Map String Int

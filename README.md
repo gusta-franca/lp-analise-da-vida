@@ -36,16 +36,17 @@ O Cabal pode baixar as dependências Haskell necessárias durante a primeira com
 
 ## Analisador de textos
 
-Execute `make text`. O programa pergunta se a entrada será digitada (`1`) ou lida de um arquivo (`2`). No modo arquivo, informe o caminho do arquivo; caminhos relativos são interpretados a partir do diretório `text/`, de onde o executável é iniciado. No modo de digitação, informe o texto em uma linha.
+Execute `make text`. O programa pergunta se a entrada será digitada (`1`) ou lida de um arquivo (`2`). No modo arquivo, informe o caminho do arquivo; caminhos relativos são interpretados a partir do diretório `text/`, de onde o executável é iniciado. No modo de digitação, escreva o texto em uma ou mais linhas e finalize com uma linha vazia.
 
 Em seguida, responda se deseja remover palavras comuns (`s` para sim; qualquer outra resposta mantém todas as palavras) e escolha a ordenação das tabelas (`1` alfabética ou `2` por frequência). O programa executa as análises em sequência:
 
 - **Contagem:** total de palavras consideradas.
 - **Frequência:** quantidade de ocorrências de cada palavra.
-- **Palavras mais frequentes:** solicita quantas palavras distintas devem ser exibidas.
+- **Palavras mais frequentes:** solicita quantas palavras distintas devem ser exibidas. O valor precisa ser positivo e não pode exceder o número de palavras distintas; se não houver palavras para analisar, o programa informa isso sem pedir um número.
 - **Frequência relativa:** percentual de cada palavra em relação ao total considerado.
 
 Maiúsculas são convertidas para minúsculas e pontuação é tratada como separador. A remoção de stopwords é aplicada antes das contagens, então também afeta o total usado na frequência relativa. Na ordenação por frequência, empates são apresentados em ordem alfabética.
+Se não houver palavras após a análise, a frequência relativa também apresenta uma mensagem explicativa em vez de uma tabela vazia.
 
 A figura mostra um exemplo de execução do analisador:
 
