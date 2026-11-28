@@ -1,6 +1,6 @@
 module Main (main) where
 
-import Analyser (frequenciaPalavras, palavrasFrequentes, totalPalavras)
+import Analyser (frequenciaPalavras, frequenciaRelativa, palavrasFrequentes, totalPalavras)
 import CustomIo (lerArquivo, lerModo, lerTexto, perguntarOrdem, perguntarStopword)
 
 main :: IO ()
@@ -23,8 +23,9 @@ main = do
   -- Também tem uma função pra ordenar por frequência já
 
   putStrLn "\n-- ANÁLISE: "
-  totalPalavras texto
-  frequenciaPalavras texto
-  palavrasFrequentes texto
+  totalPalavras texto removerComuns
+  frequenciaPalavras texto removerComuns ordem
+  palavrasFrequentes texto removerComuns ordem
+  frequenciaRelativa texto removerComuns ordem
 
   putStrLn ""

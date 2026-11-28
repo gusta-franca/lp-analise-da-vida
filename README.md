@@ -7,79 +7,79 @@ Projeto desenvolvido para a disciplina Aspectos de Linguagens de Programação (
 - Erick Molina Gehring
 - Gustavo Martins França
 
-O projeto contém duas aplicações: Analisador de Textos e Frequência de Palavras (`texto/`); e o Jogo da Vida de Conway (`conways/`). Ambas foram implementadas em Haskell.
+O projeto contém duas aplicações em Haskell: um analisador de textos (`text/`) e o Jogo da Vida de Conway (`conways/`). Escolhemos Haskell para ter a experiência prática de aprender e utilizar uma linguagem funcional. Além disso, entre as opções apresentadas em aula, ela nos pareceu a mais acessível para iniciantes, tanto para absorver os conceitos quanto para aplicar na prática.
 
-## Exemplo de uso
+## Requisitos
 
-### Analisador de textos
-
-Execute o seguinte comando para iniciar o sistema:
-
-```bash
-make text
-```
-
-Escolha se o modo de entrada vai ser um texto escrito manualmente pelo terminal ou se será um arquivo. Caso seja um arquivo, o seu caminho precisa ser informado.
-
-Tendo a fonte do texto informada, o usuário deve escolher se o programa deve remover palavras pouco relevantes como artigos, preposições, conjuções, etc.
-
-Após isso, selecione qual análise será realizada entre as seguintes:
-
-- Contagem de palavras: Imprime o número total de palavras no texto
-- Frequência de cada palavra: Imprime uma tabela associando as palavras do texto com o número de vezes que aparece
-- Palavras mais frequentes: Pergunta quantas palavras serão exibidas e imprime as mais frequentes com o número de vezes que aparece
-- Frequência relativa: Imprime uma tabela com todas as palavras e sua proporção de ocorrência
-
-Para as opções que imprimem tabelas o programa irá perguntar se a tabela deve ser ordenada alfabeticamente ou com base na frequência.
-
-A Figura abaixo demonstra a execução do programa para palavras mais frequentes com o próprio `README.md` como base.
-
-### ATUALIZAR ESSA FIGURA DEPOIS
-
-<img src="figures/text-exemplo.png" alt="text-exemplo" width="400">
-
-### Conway's Game of Life
-
-Em um terminal, execute:
+- GHC 9.10.3 e `cabal-install` (o projeto requer `base-4.20.2.0`).
+- GNU Make.
+- Em distribuições Debian/Ubuntu, instale também a biblioteca de desenvolvimento GMP:
 
 ```bash
-make conways
+sudo apt update
+sudo apt install build-essential libgmp-dev
 ```
 
-Digite o nome do arquivo de inicío dentre os listados. Os arquivos utilizados para teste representam alguns padrões  conhecidos do jogo:
+Instale o GHC e o Cabal pela forma recomendada para seu sistema. Confira as versões com `ghc --version` e `cabal --version`.
 
-- mini_glider.txt
-- pulsar.txt
-- glider.txt
-- r_pentomino.txt
-- oscilators.txt
+## Compilar e executar
 
-Os arquivos de texto estão no diretório `conways/data/`.
+Na raiz do repositório:
 
-Após selecionar um arquivo, escolha um dos seguintes modos de execução:
+```bash
+make build      # compila as duas aplicações
+make text       # compila e executa o analisador
+make conways    # compila e executa o Jogo da Vida
+```
 
-- Manual
-- Contínuo
+O Cabal pode baixar as dependências Haskell necessárias durante a primeira compilação.
 
-No modo manual, uma nova geração é compudata e exibida ao pressionar ENTER, e é possível parar a execução com o caractere `q` ou `Q`.
+## Analisador de textos
 
-No modo automático, uma nova geração é computada e exibida após um intervalo de tempo. Ao selecionar esse modo, é possível definir esse intervalo de tempo (em segundos) e a quantidade de iterações do jogo.
+Execute `make text`. O programa pergunta se a entrada será digitada (`1`) ou lida de um arquivo (`2`). No modo arquivo, informe o caminho do arquivo; caminhos relativos são interpretados a partir do diretório `text/`, de onde o executável é iniciado. No modo de digitação, informe o texto em uma linha.
 
-Na Figura abaixo, está ilustrado o estado do jogo após 38 iterações a partir do arquivo `data/r_pentomino.txt`, modo manual.
+Em seguida, responda se deseja remover palavras comuns (`s` para sim; qualquer outra resposta mantém todas as palavras) e escolha a ordenação das tabelas (`1` alfabética ou `2` por frequência). O programa executa as análises em sequência:
 
-<img src="figures/r_pentomino_38.png" alt="r_pentomino_38" width="400">
+- **Contagem:** total de palavras consideradas.
+- **Frequência:** quantidade de ocorrências de cada palavra.
+- **Palavras mais frequentes:** solicita quantas palavras distintas devem ser exibidas.
+- **Frequência relativa:** percentual de cada palavra em relação ao total considerado.
 
-## Construções e Conceitos de Programação Funcional
+Maiúsculas são convertidas para minúsculas e pontuação é tratada como separador. A remoção de stopwords é aplicada antes das contagens, então também afeta o total usado na frequência relativa. Na ordenação por frequência, empates são apresentados em ordem alfabética.
 
-Os conceitos de programação funcional utilizados neste trabalho e as funções que os aplicam estão ilustradas na Tabela abaixo. Há comentŕios no código fonte das funções citadas detalhando o uso do conceito respectivo.
+A figura mostra um exemplo de execução do analisador:
 
-| Conceito | Arquivo | Funções |
+<img src="figures/text-exemplo.png" alt="Exemplo de execução do analisador de textos" width="520">
+
+## Jogo da Vida de Conway
+
+Execute `make conways`. O programa lista os arquivos de configuração inicial disponíveis em `conways/data/`; informe o nome de um deles. Cada arquivo descreve o tabuleiro inicial, usando `O` para célula viva e `.` para célula morta.
+
+Escolha o modo de execução:
+
+- **Manual (`1`):** pressione ENTER para avançar uma geração ou `q`/`Q` para encerrar.
+- **Contínuo (`2`):** informe o intervalo entre gerações em segundos e o máximo de gerações. Informe `0` como máximo para executar continuamente.
+
+O jogo aplica as regras clássicas de sobrevivência, morte por isolamento, morte por superpopulação e reprodução. A cada passo, o tabuleiro da geração seguinte é calculado a partir do tabuleiro anterior.
+
+Os padrões de exemplo estão em `conways/data/`: `mini_glider.txt`, `pulsar.txt`, `glider.txt`, `r_pentomino.txt` e `oscilators.txt`.
+
+<img src="figures/r_pentomino_38.png" alt="Jogo da Vida após 38 gerações do padrão R-pentomino" width="400">
+
+## Conceitos de programação funcional
+
+Os conceitos abaixo são usados efetivamente no código. Os caminhos são relativos à raiz do repositório.
+
+| Conceito | Onde aparece | Contribuição |
 | :--- | :--- | :--- |
-| List Comprehensions | `conways/Rules.hs` | `proximaGeracao`, `contarVizinhos` |
-| Recursão | `conways/Main.hs` | `loopContinuo`, `loopManual` |
-| Recursão | `conways/CustomIo.hs` | `lerArquivo`, `lerInteiro`, `lerModo`, `lerComando` |
-| Recursão | `conways/Environment.hs` | `distribuir` |
-| Funções de Ordem Superior | `conways/CustomIo.hs` | `lerInteiro` |
-| Map | `conways/Environment.hs`, `text/Analyser.hs` | `popularMatriz`, `_normalizarTexto` |
-| Lambda | `text/Analyser.hs` | `_normalizarTexto` |
-| Fold | `text/Analyser.hs` | `_enumerarPalavras` |
+| List comprehensions | `conways/src/Rules.hs`: `proximaGeracao`, `contarVizinhos` | Percorrem posições e vizinhos do tabuleiro para construir a próxima geração e contar células vivas. |
+| Recursão | `conways/app/Main.hs`: `loopManual`, `loopContinuo`; `conways/src/CustomIo.hs`: `lerArquivo`, `lerModo`, `lerInteiro`, `lerComando`, `exibirLista`; `conways/src/Environment.hs`: `distribuir` | Repetem a evolução do jogo, validam/repetem entradas e dividem a lista de células em linhas. |
+| Funções de ordem superior | `conways/src/CustomIo.hs`: `lerInteiro` (`all isDigit`); `text/src/Analyser.hs`: `_ordenarPorFrequencia` (`sortBy`) | Recebem funções como argumento para validar caracteres e ordenar as frequências. |
+| `map` | `conways/src/Environment.hs`: `popularMatriz`; `text/src/Analyser.hs`: `_normalizarTexto` | Aplicam uma transformação a cada item de uma lista. |
+| `filter` | `text/src/Analyser.hs`: `_removerStopwords` | Mantém as palavras que não pertencem ao conjunto de stopwords. |
+| `foldl'` (fold) | `text/src/Analyser.hs`: `_enumerarPalavras` | Percorre as palavras e acumula as contagens em um mapa. |
+| Lambdas | `text/src/Analyser.hs`: `_normalizarTexto`, `_removerStopwords`, `_ordenarPorFrequencia` | Definem funções locais usadas nas transformações, filtragem e ordenação. |
+| Composição de funções | `text/src/Analyser.hs`: `_ordenarPorFrequencia` | Compõe a conversão do mapa para uma lista com a ordenação por frequência. |
+| Estruturas imutáveis e funções puras | `conways/src/Rules.hs`: `proximaGeracao`; `text/src/Analyser.hs`: `_normalizarTexto`, `_enumerarPalavras` | Produzem resultados novos a partir das entradas, sem alterar o tabuleiro ou texto original. |
+| Estruturas de dados funcionais | `text/src/Analyser.hs`: `Map` e `Set` | Guardam as frequências e permitem consultar o conjunto de stopwords sem mutação compartilhada. |
+
